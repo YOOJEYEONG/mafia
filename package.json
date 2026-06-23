@@ -1,0 +1,17 @@
+{
+  "name": "mafia-party",
+  "version": "1.0.0",
+  "description": "진행자 없이 모두가 즐기는 실시간 마피아 게임 (8~12인)",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  }
+}

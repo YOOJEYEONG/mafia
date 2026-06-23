@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>🎭 마피아</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- 로그인 / 입장 -->
+  <section id="screen-home" class="screen">
+    <div class="hero">
+      <div class="logo">🎭</div>
+      <h1>마피아</h1>
+      <p class="tag">진행자 없이 친구들과 즐기는 마피아 (8~12인)</p>
+    </div>
+    <div class="card">
+      <label>닉네임</label>
+      <input id="nameInput" maxlength="16" placeholder="이름을 입력하세요" />
+      <button id="btnCreate" class="primary">새 방 만들기</button>
+      <div class="divider"><span>또는</span></div>
+      <label>방 코드 (4자리)</label>
+      <input id="codeInput" maxlength="4" inputmode="numeric" placeholder="예: 1234" />
+      <button id="btnJoin">방 참가하기</button>
+      <p id="homeError" class="error"></p>
+      <div class="divider"><span>혼자 구경할래요?</span></div>
+      <button id="btnDemo" class="ghost">👁️ 봇 8명 데모 관전 (전 과정 보기)</button>
+    </div>
+  </section>
+
+  <!-- 로비 -->
+  <section id="screen-lobby" class="screen hidden">
+    <div class="topbar">
+      <span class="roomcode">방 코드 <b id="lobbyCode"></b></span>
+      <button id="btnLeave" class="ghost small">나가기</button>
+    </div>
+    <div class="card">
+      <h2>대기실 <span id="playerCount" class="muted"></span></h2>
+      <ul id="lobbyPlayers" class="player-list"></ul>
+    </div>
+    <div class="card" id="compCard">
+      <h3>이 인원의 직업 구성</h3>
+      <div id="compList" class="comp-list"></div>
+    </div>
+    <div class="card" id="hostSettings">
+      <h3>진행 설정 <span class="muted">(방장)</span></h3>
+      <div class="setting"><label>밤 시간</label><input type="range" id="setNight" min="20" max="180" step="5"><span id="setNightV"></span>초</div>
+      <div class="setting"><label>토론 시간</label><input type="range" id="setDiscuss" min="20" max="300" step="5"><span id="setDiscussV"></span>초</div>
+      <div class="setting"><label>투표 시간</label><input type="range" id="setVote" min="15" max="120" step="5"><span id="setVoteV"></span>초</div>
+    </div>
+    <button id="btnStart" class="primary big">게임 시작</button>
+    <p id="lobbyHint" class="muted center"></p>
+  </section>
+
+  <!-- 역할 공개 -->
+  <section id="screen-role" class="screen hidden">
+    <div class="role-card" id="roleCard">
+      <div class="role-emoji" id="roleEmoji"></div>
+      <h2 id="roleName"></h2>
+      <div class="team-badge" id="roleTeam"></div>
+      <p class="role-desc" id="roleDesc"></p>
+      <div id="roleExtra" class="role-extra"></div>
+    </div>
+    <button id="btnRoleOk" class="primary big">확인했어요</button>
+  </section>
+
+  <!-- 게임 진행 -->
+  <section id="screen-game" class="screen hidden">
+    <div class="topbar gamebar">
+      <span id="phaseLabel" class="phase"></span>
+      <span id="timer" class="timer"></span>
+      <span id="myStatus" class="mystatus"></span>
+    </div>
+
+    <div id="actionPanel" class="card action-panel hidden"></div>
+    <div id="votePanel" class="card vote-panel hidden"></div>
+
+    <div class="card players-card">
+      <h3>플레이어</h3>
+      <ul id="gamePlayers" class="player-list small"></ul>
+    </div>
+
+    <!-- 채팅 -->
+    <div class="chat" id="chatBox">
+      <div class="chat-tabs" id="chatTabs"></div>
+      <div class="chat-log" id="chatLog"></div>
+      <div class="chat-input" id="chatInputWrap">
+        <input id="chatInput" placeholder="메시지..." maxlength="300" />
+        <button id="chatSend">전송</button>
+      </div>
+    </div>
+
+    <div id="hostControls" class="host-controls hidden">
+      <button id="btnSkip" class="ghost small">⏭️ 단계 넘기기 (방장)</button>
+    </div>
+  </section>
+
+  <!-- 결과 -->
+  <section id="screen-end" class="screen hidden">
+    <div class="card result-card">
+      <h2 id="resultLabel"></h2>
+      <ul id="resultRoles" class="result-roles"></ul>
+      <button id="btnRestart" class="primary big">다시 하기 (방장)</button>
+      <p class="muted center" id="endHint">방장이 새 게임을 시작할 때까지 기다려주세요.</p>
+    </div>
+  </section>
+
+  <!-- 관전 (봇 데모) -->
+  <section id="screen-spectate" class="screen hidden">
+    <div class="topbar gamebar">
+      <span id="spPhase" class="phase"></span>
+      <span id="spTimer" class="timer"></span>
+      <span class="mystatus">👁️ 관전 모드</span>
+    </div>
+    <div class="card players-card">
+      <h3>플레이어 <span class="muted">(관전: 역할 전부 공개)</span></h3>
+      <ul id="spPlayers" class="player-list small"></ul>
+    </div>
+    <div id="spResult" class="card result-card hidden"></div>
+    <div class="chat" id="spChat">
+      <div class="chat-tabs" id="spTabs"></div>
+      <div class="chat-log" id="spLog"></div>
+    </div>
+    <p class="muted center">밤에는 마피아·연인 비밀 채팅도 관전자에게만 모두 보입니다.</p>
+    <button id="btnSpectateHome" class="ghost">🏠 처음으로</button>
+  </section>
+
+  <div id="toast" class="toast hidden"></div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="client.js"></script>
+</body>
+</html>

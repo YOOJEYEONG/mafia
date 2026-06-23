@@ -1,0 +1,12 @@
+# Render.com 무료 배포 설정 (Blueprint)
+# 이 저장소를 GitHub에 올린 뒤 Render에서 "New > Blueprint" 로 불러오면 자동 적용됩니다.
+services:
+  - type: web
+    name: mafia-party
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22.14.0
