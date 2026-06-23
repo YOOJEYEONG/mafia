@@ -40,7 +40,7 @@ function handleJoin(res) {
   if (res && res.ok) {
     me.playerId = res.playerId;
     me.code = res.code;
-    localStorage.setItem('mafiaSession', JSON.stringify(me));
+    sessionStorage.setItem('mafiaSession', JSON.stringify(me));
   }
 }
 socket.on('joined', (d) => { me.playerId = d.playerId; me.code = d.code; });
@@ -58,18 +58,18 @@ $('btnSpectateHome').onclick = () => { location.reload(); };
 
 $('btnLeave').onclick = () => {
   socket.emit('leaveRoom');
-  localStorage.removeItem('mafiaSession');
+  sessionStorage.removeItem('mafiaSession');
   location.reload();
 };
 
 // 재접속 복구
 window.addEventListener('load', () => {
-  const saved = localStorage.getItem('mafiaSession');
+  const saved = sessionStorage.getItem('mafiaSession');
   if (saved) {
     const s = JSON.parse(saved);
     socket.emit('rejoin', { code: s.code, playerId: s.playerId }, (res) => {
       if (res && res.ok) { me = s; }
-      else { localStorage.removeItem('mafiaSession'); show('home'); }
+      else { sessionStorage.removeItem('mafiaSession'); show('home'); }
     });
   }
 });
